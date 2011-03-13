@@ -37,6 +37,18 @@ $(function(){
         runSearch(false);
     })
 
+    $(document).keydown(function(e) {
+        var doPrevent = false;
+        if (e.keyCode == 8) {
+            var d = e.srcElement || e.target;
+            doPrevent = (d.tagName.toUpperCase() != 'INPUT')
+        }
+
+        if (doPrevent)
+            e.preventDefault();
+    });
+
+
     $('#rebuild').click(function() { runSearch(true) } )
 
     $('#input')[0].focus()
