@@ -23,6 +23,7 @@
 package com.alcshare.gothere.servlets;
 
 import com.alcshare.gothere.data.LocPair;
+import com.controlj.green.addonsupport.AddOnInfo;
 import com.controlj.green.addonsupport.access.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -86,7 +87,7 @@ public class SearchServlet extends HttpServlet {
                 final List<LocPair> locList = new ArrayList<LocPair>();
                 data = locList;
                 session.setAttribute(KEY_DATA, data);
-                SystemConnection connection = DirectAccess.getDirectAccess().getUserSystemConnection(req);
+                SystemConnection connection = AddOnInfo.getAddOnInfo().getUserSystemConnection(req);
 
                 connection.runReadAction(new ReadAction() {
                     @Override
