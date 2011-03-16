@@ -22,14 +22,36 @@
 
 
 function runSearch(rebuild) {
-    params = {value: $('#input').attr('value')}
+    inProgress = true;
+    lastSearch = $('#input').attr('value')
+    
+    params = {value: lastSearch}
     if (rebuild) { params.reinit = true;}
     $.get('servlets/search',params, function(content) {
         $('#result').html(content)
+        resetAndQueueSearch(1)
     })
 }
 
+function resetAndQueueSearch(delay) {
+    inProgress = false
+    if (lastSearch != $('#input').attr('value')) {
+        setTimeout("runSearch(false)", delay)
+    }
+}
+
+
+var lastSearch = ""
+var inProgress = false;
+
+function requestSearch(rebuild) {
+    if (!inProgress) {
+        runSearch(rebuild)
+    }
+}
+
 $(function(){
+    $(document).ajaxError(function() { resetAndQueueSearch(200) })
     $('#input').keyup( function() { runSearch(false) })
     
     $('#clear').click(function(){

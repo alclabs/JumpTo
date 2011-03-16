@@ -47,6 +47,21 @@
             text-decoration:underline;
             cursor:pointer;
         }
+
+        /*
+        #input {
+            line-height:18px;
+            border:none;
+            outline:none;
+        }
+
+        #inwrapper {
+            background:white;
+            line-height:18px;
+            padding-left:10px;
+            padding-right:10px;
+        }
+        */
     </style>
 
     <script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
@@ -54,7 +69,7 @@
 </head>
 <body>
 <div id="title" >Where do you want to go?</div><br/>
-<div id="searchbar"><input id="input" type="text" size="70"><button id="clear">Clear</button><a id="rebuild">Rebuild Cache</a></div>
+<div id="searchbar"><span id="inwrapper"><input id="input" type="text" size="70"><button id="clear">Clear</button></span><a id="rebuild">Rebuild Cache</a></div>
 <br/>
 <div id="result"></div>
 </body>
