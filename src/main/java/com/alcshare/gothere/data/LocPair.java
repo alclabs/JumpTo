@@ -14,15 +14,18 @@ import java.io.Serializable;
  */
 public class LocPair implements Serializable, Comparable {
     public String displayPath;
+    public String searchPath;
     public String href;
 
     public LocPair(HttpServletRequest req, Location loc, String overrideName) {
         this(req, loc);
         displayPath = overrideName;
+        searchPath = displayPath.toUpperCase();
     }
 
     public LocPair(HttpServletRequest req, Location loc) {
         displayPath = getFullDisplayPath(loc);
+        searchPath = displayPath.toUpperCase();
         try {
             href = Link.getURL(req, UITree.GEO, loc);
         } catch (LinkException e) { href = ""; }

@@ -47,6 +47,10 @@
             text-decoration:underline;
             cursor:pointer;
         }
+        #hint {
+            text-align:center;
+            color:#777;
+        }
 
         /*
         #input {
@@ -65,11 +69,12 @@
     </style>
 
     <script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
-    <script type='text/javascript' src="js/gothere.js"></script>
+    <script type='text/javascript' src="js/jumpto.js"></script>
 </head>
 <body>
 <div id="title" >Where do you want to go?</div><br/>
 <div id="searchbar"><span id="inwrapper"><input id="input" type="text" size="70"><button id="clear">Clear</button></span><a id="rebuild">Rebuild Cache</a></div>
+<div id="hint">Results must contain all words</div>
 <br/>
 <div id="result"></div>
 </body>

@@ -21,43 +21,64 @@
  */
 
 
-function runSearch(rebuild) {
+function runSearch(rebuild, all) {
     inProgress = true;
-    lastSearch = $('#input').attr('value')
-    
+    lastSearch = $('#input').attr('value');
+
     params = {value: lastSearch}
     if (rebuild) { params.reinit = true;}
+    if (all) { params.all = true; }
+//    console.log("running search with '"+lastSearch+"'");
     $.get('servlets/search',params, function(content) {
-        $('#result').html(content)
-        resetAndQueueSearch(1)
+        inProgress = false;
+//        console.log("search response - good");
+
+        var start = new Date()
+        var wrapper = $('#result')
+        //wrapper.css('display','none')
+        wrapper.html(content);
+        //$('#result')[0].innerHTML = content;
+        var end = new Date()
+//        console.log('inserting content took '+ (end.getTime() - start.getTime()) + " mSec")
+        //wrapper.css('display','block')
+        queueSearch(0);
     })
 }
 
-function resetAndQueueSearch(delay) {
-    inProgress = false
-    if (lastSearch != $('#input').attr('value')) {
-        setTimeout("runSearch(false)", delay)
+function searchTimerHandler() {
+    searchTimer = null;
+    var currentSearch = $('#input').attr('value');
+//    console.log("searchTimer triggered - current:"+currentSearch +", last:"+lastSearch)
+    if (!inProgress && (lastSearch != currentSearch)) {
+        runSearch(false, false)
     }
 }
 
+function queueSearch(delay) {
+    if (searchTimer)  {
+        clearTimeout(searchTimer);
+    }
+//    console.log("Setting timer for "+delay);
+    searchTimer = setTimeout(searchTimerHandler, delay);
+}
 
-var lastSearch = ""
+var lastSearch = null;
 var inProgress = false;
-
-function requestSearch(rebuild) {
-    if (!inProgress) {
-        runSearch(rebuild)
-    }
-}
+var searchTimer = null;
 
 $(function(){
-    $(document).ajaxError(function() { resetAndQueueSearch(200) })
-    $('#input').keyup( function() { runSearch(false) })
+    $(document).ajaxError(function() {
+        inProgress = false;
+//        console.log("ajax error");
+        queueSearch(200);
+    });
+
+    $('#input').keyup( function() { queueSearch(100) });
     
     $('#clear').click(function(){
         $('#input').attr('value','');
-        runSearch(false);
-    })
+        queueSearch(0);
+    });
 
     $(document).keydown(function(e) {
         var doPrevent = false;
@@ -71,11 +92,11 @@ $(function(){
     });
 
 
-    $('#rebuild').click(function() { runSearch(true) } )
+    $('#rebuild').click(function() { runSearch(true, false) } );
 
-    $('#input')[0].focus()
+    $('#input')[0].focus();
 
-    runSearch();
+    queueSearch(0);
 });
 
 

@@ -23,7 +23,6 @@
 package com.alcshare.gothere.servlets;
 
 import com.alcshare.gothere.data.LocPair;
-import com.controlj.green.addonsupport.AddOnInfo;
 import com.controlj.green.addonsupport.access.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,46 +35,72 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class SearchServlet extends HttpServlet {
     private static final String KEY_DATA = "LU_DATA";
     private static final String PARAM_VALUE = "value";
     private static final String PARAM_REINIT = "reinit";
+    private static final String PARAM_ALL = "all";
 
     @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html");
 
         final String riString = req.getParameter(PARAM_REINIT);
+        final String allString = req.getParameter(PARAM_ALL);
+        boolean all = false;
+        if (allString != null && allString.equalsIgnoreCase("true")) {
+            all = true;
+        }
         if (riString != null) {
             req.getSession().removeAttribute(KEY_DATA);
         }
         final String value = req.getParameter(PARAM_VALUE);
+
+        System.out.println("Searching for '"+value+"'");
         final PrintWriter writer = resp.getWriter();
 
         List<LocPair> locData = getLookupData(req);
         List<LocPair> result = search(locData, value);
-        writeResults(result, writer);
+        writeResults(result, writer, all);
     }
 
-    private void writeResults(List<LocPair> data, PrintWriter writer) {
+    private void writeResults(List<LocPair> data, PrintWriter writer, boolean all) {
+        int count =0;
         for (LocPair pair : data) {
             writer.println("<div><a target=\"webctrl\" href=\""+pair.href+"\">"+pair.displayPath+"</a></div>");
+            if (!all && (count++ >= 1000)) {
+                writer.println("<div onclick=\"runSearch(false,true)\" style=\"padding-left:100px; font-weight:bold;text-decoration:underline;cursor:pointer;\">More ...</div>");
+                break;
+            }
         }
     }
 
+    
     private List<LocPair> search(List<LocPair>data, String value) {
         List<LocPair> result = new ArrayList<LocPair>();
         String upperValue = value.toUpperCase();
+        String[] searchStrings = upperValue.split("\\s");
+        Date start = new Date();
         if (value == null || value.length() == 0) {
             result.add(data.get(0));
         } else {
             for (LocPair pair : data) {
-                if (pair.displayPath.toUpperCase().indexOf(upperValue) >= 0) {
+                boolean missing = false;
+                for (String searchString : searchStrings) {
+                    if (!pair.searchPath.contains(searchString)) {
+                        missing = true;
+                        break;
+                    }
+                }
+                if (!missing) {
                     result.add(pair);
                 }
             }
         }
+        Date end = new Date();
+        System.out.println("Searching for '"+value+"' took "+(end.getTime() - start.getTime())+" mSec.");
         return result;
     }
 
@@ -87,7 +112,8 @@ public class SearchServlet extends HttpServlet {
                 final List<LocPair> locList = new ArrayList<LocPair>();
                 data = locList;
                 session.setAttribute(KEY_DATA, data);
-                SystemConnection connection = AddOnInfo.getAddOnInfo().getUserSystemConnection(req);
+                SystemConnection connection = DirectAccess.getDirectAccess().getUserSystemConnection(req);
+                Date start = new Date();
 
                 connection.runReadAction(new ReadAction() {
                     @Override
@@ -97,6 +123,10 @@ public class SearchServlet extends HttpServlet {
                         Collections.sort(locList);
                     }
                 });
+                Date end = new Date();
+                System.out.println("JumpTo Add-On created search list of "+locList.size()+" items in "+
+                        (end.getTime() - start.getTime())+ " mSec");
+
             } catch (Exception e) {
                 System.err.println("Error in JumpTo Add-On:");
                 e.printStackTrace();
