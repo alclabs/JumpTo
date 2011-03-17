@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class SearchServlet extends HttpServlet {
@@ -58,7 +57,6 @@ public class SearchServlet extends HttpServlet {
         }
         final String value = req.getParameter(PARAM_VALUE);
 
-        System.out.println("Searching for '"+value+"'");
         final PrintWriter writer = resp.getWriter();
 
         List<LocPair> locData = getLookupData(req);
@@ -82,7 +80,7 @@ public class SearchServlet extends HttpServlet {
         List<LocPair> result = new ArrayList<LocPair>();
         String upperValue = value.toUpperCase();
         String[] searchStrings = upperValue.split("\\s");
-        Date start = new Date();
+        //Date start = new Date();
         if (value == null || value.length() == 0) {
             result.add(data.get(0));
         } else {
@@ -99,8 +97,8 @@ public class SearchServlet extends HttpServlet {
                 }
             }
         }
-        Date end = new Date();
-        System.out.println("Searching for '"+value+"' took "+(end.getTime() - start.getTime())+" mSec.");
+        //Date end = new Date();
+        //System.out.println("Searching for '"+value+"' took "+(end.getTime() - start.getTime())+" mSec.");
         return result;
     }
 
@@ -113,7 +111,7 @@ public class SearchServlet extends HttpServlet {
                 data = locList;
                 session.setAttribute(KEY_DATA, data);
                 SystemConnection connection = DirectAccess.getDirectAccess().getUserSystemConnection(req);
-                Date start = new Date();
+                //Date start = new Date();
 
                 connection.runReadAction(new ReadAction() {
                     @Override
@@ -123,9 +121,8 @@ public class SearchServlet extends HttpServlet {
                         Collections.sort(locList);
                     }
                 });
-                Date end = new Date();
-                System.out.println("JumpTo Add-On created search list of "+locList.size()+" items in "+
-                        (end.getTime() - start.getTime())+ " mSec");
+                //Date end = new Date();
+                // System.out.println("JumpTo Add-On created search list of "+locList.size()+" items in "+(end.getTime() - start.getTime())+ " mSec");
 
             } catch (Exception e) {
                 System.err.println("Error in JumpTo Add-On:");
