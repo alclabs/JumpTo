@@ -53,6 +53,10 @@
         }
 
         /*
+        #searchbar {
+            line-height:30px;
+            display:block;
+        }
         #input {
             line-height:18px;
             border:none;
@@ -60,10 +64,11 @@
         }
 
         #inwrapper {
-            background:white;
+            background:blue;
             line-height:18px;
             padding-left:10px;
             padding-right:10px;
+            vertical-align:baseline;
         }
         */
     </style>
@@ -73,7 +78,7 @@
 </head>
 <body>
 <div id="title" >Where do you want to go?</div><br/>
-<div id="searchbar"><span id="inwrapper"><input id="input" type="text" size="70"><button id="clear">Clear</button></span><a id="rebuild">Rebuild Cache</a></div>
+<div id="searchbar"><span id="inwrapper">&nbsp;<input id="input" type="text" size="70"><button id="clear">Clear</button></span><a id="rebuild">Rebuild Cache</a></div>
 <div id="hint">Results must contain all words</div>
 <br/>
 <div id="result"></div>
