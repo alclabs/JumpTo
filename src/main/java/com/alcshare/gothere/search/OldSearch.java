@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
+//import java.util.Date;
 import java.util.List;
 
 // the original search routine written by Steve
@@ -83,7 +83,7 @@ public class OldSearch
             data = locList;
             session.setAttribute(KEY_DATA, data);
             SystemConnection connection = DirectAccess.getDirectAccess().getUserSystemConnection(req);
-            Date start = new Date();
+            //Date start = new Date();
 
             connection.runReadAction(new ReadAction()
             {
@@ -95,9 +95,9 @@ public class OldSearch
                   Collections.sort(locList);
                }
             });
-            Date end = new Date();
-            System.out.println("JumpTo Add-On created search list of " + locList.size() + " items in " +
-                  (end.getTime() - start.getTime()) + " mSec");
+            //Date end = new Date();
+            //System.out.println("JumpTo Add-On created search list of " + locList.size() + " items in " +
+            //      (end.getTime() - start.getTime()) + " mSec");
 
          }
          catch (Exception e)

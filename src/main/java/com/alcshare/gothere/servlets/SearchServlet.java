@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
+//import java.util.Date;
 import java.util.List;
 
 public class SearchServlet extends HttpServlet
@@ -68,19 +68,19 @@ public class SearchServlet extends HttpServlet
       {
          OldSearch search = new OldSearch();
          List<LocPair> locData = search.getLookupData(req, KEY_DATA);
-         Date start = new Date();
+         //Date start = new Date();
          List<LocPair> result = search.search(locData, value);
-         Date end = new Date();
-         System.out.println("Searching for '" + value + "' took " + (end.getTime() - start.getTime()) + " mSec.");
+         //Date end = new Date();
+         //System.out.println("Searching for '" + value + "' took " + (end.getTime() - start.getTime()) + " mSec.");
          search.writeResults(result, writer, all);
       }
       else
       {
          LDSearch searcher = getSearch(req);
-         Date start = new Date();
+         //Date start = new Date();
          List<LocationInfo> result = searcher.search(value, 1000);
-         Date end = new Date();
-         System.out.println("Searching for '" + value + "' took " + (end.getTime() - start.getTime()) + " mSec.");
+         //Date end = new Date();
+         //System.out.println("Searching for '" + value + "' took " + (end.getTime() - start.getTime()) + " mSec.");
          writeResults(result, writer, req, all);
       }
    }
@@ -131,7 +131,7 @@ public class SearchServlet extends HttpServlet
             session.setAttribute(KEY_DATA, data);
 
             SystemConnection connection = DirectAccess.getDirectAccess().getUserSystemConnection(req);
-            Date start = new Date();
+            //Date start = new Date();
             connection.runReadAction(new ReadAction()
             {
                @Override
@@ -140,9 +140,9 @@ public class SearchServlet extends HttpServlet
                   cache.buildCache(access);
                }
             });
-            Date end = new Date();
-            System.out.println("JumpTo Add-On created search cache of " + cache.getCache().size() + " items in " +
-                  (end.getTime() - start.getTime()) + " mSec");
+            //Date end = new Date();
+            //System.out.println("JumpTo Add-On created search cache of " + cache.getCache().size() + " items in " +
+            //      (end.getTime() - start.getTime()) + " mSec");
          }
          catch (Exception e)
          {
