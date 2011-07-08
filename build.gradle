@@ -2,20 +2,24 @@
 // and then apply it.
 configurations { gradleScript }
 repositories { mavenRepo urls: 'http://repo.alcshare.com' }
-dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.0.2' }
+dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.0.5' }
 apply from: configurations.gradleScript.resolve().iterator().next()
 
-version = '0.9.3'
-
-dependencies {
-    compile 'com.intellij:annotations:7.0.3'
-    testCompile 'junit:junit:4.8.1'
-    testCompile 'jmock:jmock:2.5.1', 'jmock:jmock-junit4:2.5.1', 'jmock:hamcrest-core:1.1', 'jmock:hamcrest-library:1.1'
-   
-    providedCompile 'com.controlj.green:directaccess-api-addon:1.1.0.+'
-    providedCompile 'com.controlj.green:webaccess-api-addon:1.1.0.+'
-    providedCompile 'javax.servlet:servlet-api:2.5'
+info {
+  name = 'JumpTo'
+  description = 'Provides a search page for finding areas and equipment'
+  version = '0.9.3'
+  vendor = 'ALC Labs'
 }
 
+dependencies {
+  compile 'com.intellij:annotations:7.0.3'
+  testCompile 'junit:junit:4.8.1'
+  testCompile 'jmock:jmock:2.5.1', 'jmock:jmock-junit4:2.5.1', 'jmock:hamcrest-core:1.1', 'jmock:hamcrest-library:1.1'
 
-deploy.dependsOn cleanDeploy 
+  providedCompile 'com.controlj.green:directaccess-api-addon:1.1.0.+'
+  providedCompile 'com.controlj.green:webaccess-api-addon:1.1.0.+'
+  providedCompile 'javax.servlet:servlet-api:2.5'
+}
+
+deploy.dependsOn cleanDeploy
