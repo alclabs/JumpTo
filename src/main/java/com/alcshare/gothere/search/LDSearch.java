@@ -26,6 +26,7 @@ public class LDSearch
 {
    private SearchCache cache;
    private LevenshteinDistance ld;
+   private NumberDistance nd;
 
    /**<!====== LDSearch ======================================================>
       Creates a new searcher over the given search-cache.
@@ -35,6 +36,7 @@ public class LDSearch
    {
       this.cache = cache;
       ld = new LevenshteinDistance(30, true);
+      nd = new NumberDistance();
    }
 
    /**<!====== search ========================================================>
@@ -59,9 +61,13 @@ public class LDSearch
       {
          if (!word.isEmpty())
          {
-            Map<LocationInfo, Integer> results = doSearch(word, determineMaxDistance(word));
-            allResults.add(results);
-         }
+            Map<LocationInfo, Integer> results;
+            final char[] wordChars = word.toCharArray();
+            if (isAllDigits(wordChars))
+               results = doNumberSearch(wordChars, 10);
+            else
+               results = doFuzzySearch(wordChars, determineMaxDistance(word));
+            allResults.add(results);         }
       }
 
       // special case - handle empty list to prevent an error from occurring in orderResults (plus, this is much faster)
@@ -134,14 +140,40 @@ public class LDSearch
       else return 3;
    }
 
-   private Map<LocationInfo, Integer> doSearch(String searchWord, int maxDistance)
+   private boolean isAllDigits(char[] word)
    {
-      final char[] patternChars = searchWord.toCharArray();
+      for (char c : word)
+      {
+         if (!Character.isDigit(c))
+            return false;
+      }
+      return true;
+   }
+
+   private Map<LocationInfo, Integer> doFuzzySearch(char[] searchChars, int maxDistance)
+   {
       final Map<LocationInfo, Integer> results = new HashMap<LocationInfo, Integer>();
 
       for (SystemAccessSearchCache.CacheEntry entry : cache.getCache())
       {
-         int distance = ld.compute(patternChars, entry.word);
+         int distance = ld.compute(searchChars, entry.word);
+         if (distance <= maxDistance)
+         {
+            for (LocationInfo locationInfo : entry.locations)
+               results.put(locationInfo, distance);
+         }
+      }
+
+      return results;
+   }
+
+   private Map<LocationInfo, Integer> doNumberSearch(char[] searchChars, int maxDistance)
+   {
+      final Map<LocationInfo, Integer> results = new HashMap<LocationInfo, Integer>();
+
+      for (SystemAccessSearchCache.CacheEntry entry : cache.getCache())
+      {
+         int distance = nd.compute(searchChars, entry.word);
          if (distance <= maxDistance)
          {
             for (LocationInfo locationInfo : entry.locations)
