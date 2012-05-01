@@ -78,7 +78,7 @@ public class SearchServlet extends HttpServlet
       {
          LDSearch searcher = getSearch(req);
          //Date start = new Date();
-         List<LocationInfo> result = searcher.search(value, 1000);
+         List<LocationInfo> result = searcher.search(value, 250);
          //Date end = new Date();
          //System.out.println("Searching for '" + value + "' took " + (end.getTime() - start.getTime()) + " mSec.");
          writeResults(result, writer, req, all);
