@@ -57,6 +57,12 @@ public class NumberDistanceTest extends Specification
          "313145"  | 0
    }
 
+   def "test partial match at end of test string"()
+   {
+      expect:
+         computeDistance("12", "181") == Integer.MAX_VALUE
+   }
+
    def "test with target stores"()
    {
       given:

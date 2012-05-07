@@ -27,6 +27,8 @@ import com.alcshare.gothere.data.LocationInfo;
 import com.alcshare.gothere.search.LDSearch;
 import com.alcshare.gothere.search.OldSearch;
 import com.alcshare.gothere.search.SystemAccessSearchCache;
+import com.controlj.green.addonsupport.AddOnInfo;
+import com.controlj.green.addonsupport.FileLogger;
 import com.controlj.green.addonsupport.access.DirectAccess;
 import com.controlj.green.addonsupport.access.ReadAction;
 import com.controlj.green.addonsupport.access.SystemAccess;
@@ -53,6 +55,8 @@ public class SearchServlet extends HttpServlet
    private static final String PARAM_REINIT = "reinit";
    private static final String PARAM_ALL = "all";
 
+   private static final FileLogger logger = AddOnInfo.getAddOnInfo().getDateStampLogger();
+
    @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
    {
       resp.setContentType("text/html");
@@ -76,12 +80,19 @@ public class SearchServlet extends HttpServlet
       }
       else
       {
-         LDSearch searcher = getSearch(req);
-         //Date start = new Date();
-         List<LocationInfo> result = searcher.search(value, 250);
-         //Date end = new Date();
-         //System.out.println("Searching for '" + value + "' took " + (end.getTime() - start.getTime()) + " mSec.");
-         writeResults(result, writer, req, all);
+         try
+         {
+            LDSearch searcher = getSearch(req);
+            //Date start = new Date();
+            List<LocationInfo> result = searcher.search(value, 250);
+            //Date end = new Date();
+            //System.out.println("Searching for '" + value + "' took " + (end.getTime() - start.getTime()) + " mSec.");
+            writeResults(result, writer, req, all);
+         }
+         catch (Exception e)
+         {
+            logger.println(e);
+         }
       }
    }
 

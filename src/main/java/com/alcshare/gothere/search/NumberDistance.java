@@ -63,11 +63,16 @@ public class NumberDistance
             break;
 
          int searchIdx = 1;
-         while (searchIdx < search.length && search[searchIdx] == target[++idx])
+         while (searchIdx < search.length && idx < endIdx-1 && search[searchIdx] == target[++idx])
             ++searchIdx;
 
          if (searchIdx < search.length)
-            continue; // there was a mismatch at some point, so keep looking
+         {
+            if (idx == endIdx-1)
+               break; // reached end of target string, we're done
+            else
+               continue; // there was a mismatch at some point, so keep looking
+         }
          else
             minDistance = Math.min(minDistance, distance + endIdx - idx - 1);
 
