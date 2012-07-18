@@ -2,7 +2,7 @@
 // and then apply it.
 configurations { gradleScript }
 repositories { mavenRepo url: 'http://repo.alcshare.com' }
-dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.13' }
+dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.16' }
 apply from: configurations.gradleScript.resolve().iterator().next()
 
 info {
@@ -15,12 +15,12 @@ info {
 dependencies {
   compile 'com.intellij:annotations:7.0.3'
 
-  providedCompile 'com.controlj.green:addonsupport-api-addon:1.1.0.+'
-  providedCompile 'com.controlj.green:directaccess-api-addon:1.1.0.+'
-  providedCompile 'com.controlj.green:webaccess-api-addon:1.1.0.+'
+  providedCompile 'com.controlj.green:addonsupport-api-addon:1.1.0'
+  providedCompile 'com.controlj.green:directaccess-api-addon:1.1.0'
+  providedCompile 'com.controlj.green:webaccess-api-addon:1.1.0'
   providedCompile 'javax.servlet:servlet-api:2.5'
 
-  groovy      'org.codehaus.groovy:groovy-all:1.8.5'
+  groovy      'org.codehaus.groovy:groovy-all:1.8.6'
   testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
 }
 
