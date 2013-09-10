@@ -22,21 +22,16 @@
 
 package com.alcshare.gothere.servlets;
 
-import com.alcshare.gothere.data.LocPair;
 import com.alcshare.gothere.data.LocationInfo;
 import com.alcshare.gothere.search.LDSearch;
-import com.alcshare.gothere.search.OldSearch;
 import com.alcshare.gothere.search.SystemAccessSearchCache;
 import com.controlj.green.addonsupport.AddOnInfo;
 import com.controlj.green.addonsupport.FileLogger;
-import com.controlj.green.addonsupport.access.DirectAccess;
-import com.controlj.green.addonsupport.access.ReadAction;
-import com.controlj.green.addonsupport.access.SystemAccess;
-import com.controlj.green.addonsupport.access.SystemConnection;
-import com.controlj.green.addonsupport.web.Link;
-import com.controlj.green.addonsupport.web.LinkException;
-import com.controlj.green.addonsupport.web.UITree;
+import com.controlj.green.addonsupport.InvalidConnectionRequestException;
+import com.controlj.green.addonsupport.access.*;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -53,79 +48,53 @@ public class SearchServlet extends HttpServlet
    private static final String KEY_DATA = "LU_DATA";
    private static final String PARAM_VALUE = "value";
    private static final String PARAM_REINIT = "reinit";
-   private static final String PARAM_ALL = "all";
 
-   private static final FileLogger logger = AddOnInfo.getAddOnInfo().getDateStampLogger();
+   private static final FileLogger LOGGER = AddOnInfo.getAddOnInfo().getDateStampLogger();
 
    @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
    {
       resp.setContentType("text/html");
 
       final String value = req.getParameter(PARAM_VALUE);
-      final boolean all = Boolean.valueOf(req.getParameter(PARAM_ALL));
       if (req.getParameter(PARAM_REINIT) != null)
          req.getSession().removeAttribute(KEY_DATA);
 
       final PrintWriter writer = resp.getWriter();
 
-      if (false)
-      {
-         OldSearch search = new OldSearch();
-         List<LocPair> locData = search.getLookupData(req, KEY_DATA);
-         //Date start = new Date();
-         List<LocPair> result = search.search(locData, value);
-         //Date end = new Date();
-         //System.out.println("Searching for '" + value + "' took " + (end.getTime() - start.getTime()) + " mSec.");
-         search.writeResults(result, writer, all);
-      }
-      else
-      {
-         try
-         {
-            LDSearch searcher = getSearch(req);
-            //Date start = new Date();
-            List<LocationInfo> result = searcher.search(value, 250);
-            //Date end = new Date();
-            //System.out.println("Searching for '" + value + "' took " + (end.getTime() - start.getTime()) + " mSec.");
-            writeResults(result, writer, req, all);
-         }
-         catch (Exception e)
-         {
-            logger.println(e);
-         }
-      }
-   }
-
-   private void writeResults(final List<LocationInfo> locations, final PrintWriter writer, final HttpServletRequest req, final boolean all)
-   {
       try
       {
-         SystemConnection connection = DirectAccess.getDirectAccess().getUserSystemConnection(req);
-         connection.runReadAction(new ReadAction()
-         {
-            @Override public void execute(@NotNull SystemAccess access) throws Exception
-            {
-               int count = 0;
-               for (LocationInfo location : locations)
-               {
-                  String href;
-                  try {
-                      href = Link.getURL(req, UITree.GEO, location.location);
-                  } catch (LinkException e) { href = ""; }
-
-                  writer.println("<div><a target=\"webctrl\" href=\"" + href + "\">" + location.fullDisplayPath + "</a></div>");
-                  if (!all && ++count > 1000)
-                  {
-                     writer.println("<div onclick=\"runSearch(false,true)\" style=\"padding-left:100px; font-weight:bold;text-decoration:underline;cursor:pointer;\">More ...</div>");
-                     break;
-                  }
-               }
-            }
-         });
+         LDSearch searcher = getSearch(req);
+         //Date start = new Date();
+         List<LocationInfo> result = searcher.search(value, 250);
+         //Date end = new Date();
+         //System.out.println("Searching for '" + value + "' took " + (end.getTime() - start.getTime()) + " mSec.");
+         writeResults(result, writer);
       }
       catch (Exception e)
       {
-         e.printStackTrace();
+         LOGGER.println(e);
+      }
+   }
+
+   private void writeResults(final List<LocationInfo> locations, final PrintWriter writer)
+   {
+      try
+      {
+         JSONWriter jsonWriter = new JSONWriter(writer);
+         jsonWriter.array();
+         int count = 0;
+         for (LocationInfo location : locations)
+         {
+            jsonWriter.object();
+            jsonWriter.key("disp").value(location.fullDisplayPath);
+            jsonWriter.key("gql").value(location.gqlPath);
+            jsonWriter.endObject();
+            if (++count > 1000)
+               break;
+         }
+         jsonWriter.endArray();
+      } catch (JSONException e) {
+         LOGGER.println(e);
       }
    }
 
@@ -154,11 +123,8 @@ public class SearchServlet extends HttpServlet
             //Date end = new Date();
             //System.out.println("JumpTo Add-On created search cache of " + cache.getCache().size() + " items in " +
             //      (end.getTime() - start.getTime()) + " mSec");
-         }
-         catch (Exception e)
-         {
-            System.err.println("Error in JumpTo Add-On:");
-            e.printStackTrace();
+         } catch (ActionExecutionException | InvalidConnectionRequestException | SystemException e) {
+            LOGGER.println(e);
          }
       }
 

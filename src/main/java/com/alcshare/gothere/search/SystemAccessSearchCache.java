@@ -12,10 +12,7 @@
 package com.alcshare.gothere.search;
 
 import com.alcshare.gothere.data.LocationInfo;
-import com.controlj.green.addonsupport.access.Location;
-import com.controlj.green.addonsupport.access.SystemAccess;
-import com.controlj.green.addonsupport.access.UnresolvableException;
-import com.controlj.green.addonsupport.access.Visitor;
+import com.controlj.green.addonsupport.access.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -27,7 +24,7 @@ public final class SystemAccessSearchCache implements SearchCache
 
    public void buildCache(SystemAccess access)
    {
-      cache = new HashMap<String, List<LocationInfo>>();
+      cache = new HashMap<>();
       cacheEntries = Collections.emptyList();
       
       Location root = access.getGeoRoot();
@@ -35,22 +32,24 @@ public final class SystemAccessSearchCache implements SearchCache
       {
          @Override public void handleLocation(Location location)
          {
-            LocationInfo locInfo = new LocationInfo(location);
-            for (String word : locInfo.displayWords)
-            {
-               List<LocationInfo> list = cache.get(word);
-               if (list == null)
+            if (location.getType() != LocationType.System) {
+               LocationInfo locInfo = new LocationInfo(location);
+               for (String word : locInfo.displayWords)
                {
-                  list = new ArrayList<LocationInfo>();
-                  cache.put(word, list);
-               }
+                  List<LocationInfo> list = cache.get(word);
+                  if (list == null)
+                  {
+                     list = new ArrayList<>();
+                     cache.put(word, list);
+                  }
 
-               list.add(locInfo);
+                  list.add(locInfo);
+               }
             }
          }
       });
 
-      cacheEntries = new ArrayList<CacheEntry>(cache.size());
+      cacheEntries = new ArrayList<>(cache.size());
       optimizeCache();
    }
 
@@ -70,7 +69,7 @@ public final class SystemAccessSearchCache implements SearchCache
            return "";
        } else {
            try {
-               return getFullDisplayPath(loc.getParent()) + " " + loc.getDisplayName();
+               return getFullDisplayPath(loc.getParent()) + ' ' + loc.getDisplayName();
            } catch (UnresolvableException e) {
                throw new RuntimeException("can't resolve parent even though hasParent is true", e);
            }

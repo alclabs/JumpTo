@@ -12,6 +12,7 @@
 package com.alcshare.gothere.data;
 
 import com.controlj.green.addonsupport.access.Location;
+import com.controlj.green.addonsupport.access.LocationType;
 import com.controlj.green.addonsupport.access.UnresolvableException;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class LocationInfo
 {
    public final Location location;
    public final String fullDisplayPath;
+   public final String gqlPath;
    public final String[] displayWords;
    public final int depth;
 
@@ -42,19 +44,21 @@ public class LocationInfo
 
       Location tmpLocation = location;
       int tmpDepth = 0;
-      String tmpDisplayPath = tmpLocation.getDisplayName();
-      List<String> tmpDisplayWords = new ArrayList<String>(getSearchWords(tmpDisplayPath));
+      StringBuilder tmpDisplayPath = new StringBuilder(tmpLocation.getDisplayName());
+      List<String> tmpDisplayWords = new ArrayList<>(getSearchWords(tmpLocation.getDisplayName()));
       while (tmpLocation.hasParent())
       {
          try { tmpLocation = tmpLocation.getParent(); } catch (UnresolvableException e) { break; }
-
          ++tmpDepth;
-         tmpDisplayPath = tmpLocation.getDisplayName() + (tmpDisplayPath.length() == 0 ? "" : " / " + tmpDisplayPath);
-         tmpDisplayWords.addAll(getSearchWords(tmpLocation.getDisplayName()));
+         if (tmpLocation.getType() != LocationType.System) {
+            tmpDisplayPath.insert(0, " / ").insert(0, tmpLocation.getDisplayName());
+            tmpDisplayWords.addAll(getSearchWords(tmpLocation.getDisplayName()));
+         }
       }
       tmpDisplayWords.remove(""); // get rid of empty strings from the words list
 
-      fullDisplayPath = tmpDisplayPath;
+      fullDisplayPath = tmpDisplayPath.toString();
+      gqlPath = location.getGQLPath();
       displayWords = tmpDisplayWords.toArray(new String[tmpDisplayWords.size()]);
       depth = tmpDepth;
    }
@@ -67,6 +71,7 @@ public class LocationInfo
    {
       this.location = location;
       this.fullDisplayPath = fullDisplayPath;
+      gqlPath = "";
       this.displayWords = displayWords;
       this.depth = depth;
    }

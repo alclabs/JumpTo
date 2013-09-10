@@ -1,33 +1,36 @@
 // this bit of complexity is to pull down the main build script from the alclabs maven repository
 // and then apply it.
-configurations { gradleScript }
+//configurations { gradleScript }
 repositories { mavenRepo url: 'http://repo.alcshare.com' }
-dependencies { gradleScript group: 'com.alcshare', name: 'alclabs-gradle', ext: 'gradle', version: '1.13' }
-apply from: configurations.gradleScript.resolve().iterator().next()
+//dependencies { gradleScript group: 'com.alcshare', name: 'addon-gradle', ext: 'gradle', version: '1.1' }
+//apply from: configurations.gradleScript.resolve().iterator().next()
+apply from: 'C:\\development\\alclabs\\addon-gradle\\src\\addon-gradle.gradle'
 
 info {
-  name = 'JumpTo'
-  description = 'Provides a search page for finding areas and equipment'
-  version = '0.9.4'
-  vendor = 'ALC Labs'
+    name = 'JumpTo'
+    description = 'Quickly and easily find areas and equipment'
+    version = '0.9.5'
+    vendor = 'ALC Labs'
+    systemMenuProvider = 'com.alcshare.gothere.ui.FindMenu'
 }
 
 dependencies {
-  compile 'com.intellij:annotations:7.0.3'
+    compile 'com.intellij:annotations:7.0.3'
+    compile 'org.json:json:20090211'
 
-  providedCompile 'com.controlj.green:addonsupport-api-addon:1.1.0.+'
-  providedCompile 'com.controlj.green:directaccess-api-addon:1.1.0.+'
-  providedCompile 'com.controlj.green:webaccess-api-addon:1.1.0.+'
-  providedCompile 'javax.servlet:servlet-api:2.5'
+    providedCompile 'com.controlj.green:addonsupport-api-addon:1.3.0'
+    providedCompile 'com.controlj.green:directaccess-api-addon:1.3.0'
+    providedCompile 'com.controlj.green:webaccess-api-addon:1.3.0'
+    providedCompile 'javax.servlet:servlet-api:2.5'
 
-  groovy      'org.codehaus.groovy:groovy-all:1.8.5'
-  testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
+    groovy      'org.codehaus.groovy:groovy-all:1.8.5'
+    testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
 }
 
 // The following strangeness is to get groovy dependencies only in the test configurations
 configurations {
-  compile.extendsFrom = [ providedCompile ]
-  testCompile.extendsFrom groovy
+    compile.extendsFrom = [ providedCompile ]
+    testCompile.extendsFrom groovy
 }
 
 deploy.dependsOn cleanDeploy

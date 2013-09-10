@@ -56,7 +56,7 @@ public class LDSearch
    {
       String[] words = pattern.toLowerCase().split("\\s");
 
-      List<Map<LocationInfo, Integer>> allResults = new ArrayList<Map<LocationInfo, Integer>>();
+      List<Map<LocationInfo, Integer>> allResults = new ArrayList<>();
       for (String word : words)
       {
          if (!word.isEmpty())
@@ -85,7 +85,7 @@ public class LDSearch
 
    private List<LocationInfo> orderResults(Map<LocationInfo, Integer> result, int numResults)
    {
-      PriorityQueue<Result> resultQueue = new PriorityQueue<Result>(numResults, new Comparator<Result>()
+      Queue<Result> resultQueue = new PriorityQueue<>(numResults, new Comparator<Result>()
       {
          @Override public int compare(Result o1, Result o2)
          {
@@ -99,7 +99,7 @@ public class LDSearch
          resultQueue.add(new Result(entry.getKey(), entry.getValue()));
 
       int num = Math.min(result.size(), numResults);
-      List<LocationInfo> resultList = new ArrayList<LocationInfo>(num);
+      List<LocationInfo> resultList = new ArrayList<>(num);
       for (int i = 0; i < num; i++)
          resultList.add(resultQueue.remove().info);
 
@@ -113,19 +113,21 @@ public class LDSearch
       for (Map<LocationInfo, Integer> result : allResults)
       {
          if (intersectingKeys == null)
-            intersectingKeys = new HashSet<LocationInfo>(result.keySet());
+            intersectingKeys = new HashSet<>(result.keySet());
          else
             intersectingKeys.retainAll(result.keySet());
       }
 
       // for all intersecting keys, add all the ranks together
-      Map<LocationInfo, Integer> mergedResults = new HashMap<LocationInfo, Integer>();
-      for (LocationInfo key : intersectingKeys)
-      {
-         int mergedRank = 0;
-         for (Map<LocationInfo, Integer> result : allResults)
-            mergedRank += result.get(key);
-         mergedResults.put(key, mergedRank);
+      Map<LocationInfo, Integer> mergedResults = new HashMap<>();
+      if (intersectingKeys != null) {
+         for (LocationInfo key : intersectingKeys)
+         {
+            int mergedRank = 0;
+            for (Map<LocationInfo, Integer> result : allResults)
+               mergedRank += result.get(key);
+            mergedResults.put(key, mergedRank);
+         }
       }
 
       return mergedResults;
@@ -152,7 +154,7 @@ public class LDSearch
 
    private Map<LocationInfo, Integer> doFuzzySearch(char[] searchChars, int maxDistance)
    {
-      final Map<LocationInfo, Integer> results = new HashMap<LocationInfo, Integer>();
+      final Map<LocationInfo, Integer> results = new HashMap<>();
 
       for (SystemAccessSearchCache.CacheEntry entry : cache.getCache())
       {
@@ -169,7 +171,7 @@ public class LDSearch
 
    private Map<LocationInfo, Integer> doNumberSearch(char[] searchChars, int maxDistance)
    {
-      final Map<LocationInfo, Integer> results = new HashMap<LocationInfo, Integer>();
+      final Map<LocationInfo, Integer> results = new HashMap<>();
 
       for (SystemAccessSearchCache.CacheEntry entry : cache.getCache())
       {

@@ -1,0 +1,61 @@
+@font-face {
+  font-family: 'Reenie Beanie';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Reenie Beanie'), local('ReenieBeanie'), url('/notes/fonts/reeniebeanie.woff') format('woff');
+}
+
+.ui-dialog {
+    font-size: medium;
+    line-height: normal;
+    background: #ddd;
+}
+
+.ui-accordion-header {
+    height: 1.3em;
+    line-height: 1.5em;
+    overflow: hidden;
+}
+
+.ui-dialog * {
+    text-align: left;
+}
+
+.find-dialog {
+    border-radius: 10px;
+    box-shadow: 8px 8px 11px rgba(33,33,33,.7);
+    min-height: 20px;
+    padding: 0 5px 0 5px;
+}
+
+.find-dialog > .ui-dialog-titlebar {
+    display: none;
+}
+
+#find-dialog {
+    width: 100%;
+    min-height: 0 ! important;
+    padding: 3px;
+    overflow: hidden;
+}
+
+#find-dialog > input {
+    width: 100%;
+    border: 0;
+    border-radius: 7px;
+    padding-left: 5px;
+}
+
+#find-dialog > div {
+    overflow: auto;
+}
+
+#find-dialog > div > div {
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.find-dialog-selection {
+    background: #bbb;
+    border-radius: 7px;
+}

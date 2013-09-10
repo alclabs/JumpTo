@@ -36,24 +36,5 @@
         <url-pattern>/servlets/search/*</url-pattern>
     </servlet-mapping>
 
-   <security-constraint>
-      <web-resource-collection>
-         <web-resource-name>WEB</web-resource-name>
-         <url-pattern>/*</url-pattern>
-         <http-method>GET</http-method>
-         <http-method>POST</http-method>
-      </web-resource-collection>
-      <auth-constraint>
-         <role-name>login</role-name>
-      </auth-constraint>
-   </security-constraint>
-
-   <login-config>
-      <auth-method>FORM</auth-method>
-      <form-login-config>
-         <form-login-page>/loginout/login.jsp</form-login-page>
-         <form-error-page>/loginout/fail_login.jsp</form-error-page>
-      </form-login-config>
-   </login-config>
 </web-app>
     
