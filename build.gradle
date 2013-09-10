@@ -1,10 +1,9 @@
 // this bit of complexity is to pull down the main build script from the alclabs maven repository
 // and then apply it.
-//configurations { gradleScript }
+configurations { gradleScript }
 repositories { mavenRepo url: 'http://repo.alcshare.com' }
-//dependencies { gradleScript group: 'com.alcshare', name: 'addon-gradle', ext: 'gradle', version: '1.1' }
-//apply from: configurations.gradleScript.resolve().iterator().next()
-apply from: 'C:\\development\\alclabs\\addon-gradle\\src\\addon-gradle.gradle'
+dependencies { gradleScript group: 'com.alcshare', name: 'addon-gradle', ext: 'gradle', version: '1.2' }
+apply from: configurations.gradleScript.resolve().iterator().next()
 
 info {
     name = 'JumpTo'
