@@ -50,3 +50,8 @@ gradle tool
 Website: http://gradle.org
 License: Apache version 2.0 - http://www.apache.org/licenses/LICENSE-2.0.html
 
+-------------------------------------------------------------------------------
+json package
+-------------------------------------------------------------------------------
+Website: http://json.org/
+License: http://www.json.org/license.html

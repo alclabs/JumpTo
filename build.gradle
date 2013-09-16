@@ -22,14 +22,6 @@ dependencies {
     providedCompile 'com.controlj.green:webaccess-api-addon:1.3.0'
     providedCompile 'javax.servlet:servlet-api:2.5'
 
-    groovy      'org.codehaus.groovy:groovy-all:1.8.5'
+    testCompile 'org.codehaus.groovy:groovy-all:1.8.5'
     testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
 }
-
-// The following strangeness is to get groovy dependencies only in the test configurations
-configurations {
-    compile.extendsFrom = [ providedCompile ]
-    testCompile.extendsFrom groovy
-}
-
-deploy.dependsOn cleanDeploy

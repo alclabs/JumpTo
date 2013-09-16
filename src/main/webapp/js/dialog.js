@@ -46,12 +46,7 @@ var com_controlj_addon_jumpto = function() {
             queueSearch(200);
         });
 
-        if (lastSearch) {
-            dlgDiv.find('> input').val(lastSearch);
-            runSearch();
-        }
-
-        dlgDiv.find('> input').on("keyup.jumpto", function() { queueSearch(100); });
+        dlgDiv.find('> input').on("keydown.jumpto search.jumpto", function() { queueSearch(100); });
 
         dlgDiv.on("mouseover.jumpto", "> div > div", function() {
             changeSelection($(this));
@@ -60,13 +55,20 @@ var com_controlj_addon_jumpto = function() {
             navigateTo($(this));
         });
 
-        dlgDiv.find('> input').on("keydown.jumpto", function(e) {
+        var prevSearch = lastSearch; // save a copy off so that new searches (while the dialog up) are ignored
+        var inputField = dlgDiv.find('> input');
+        inputField.on("keydown.jumpto", function(e) {
             var newSelection;
             if (e.which == 13) { // enter key
                 if (currentSelection) navigateTo(currentSelection);
             } else {
                 if (e.which == 40) { // down arrow
-                    if (currentSelection && currentSelection.next().length != 0)
+                    if (inputField.val().length == 0)
+                    {
+                        inputField.val(prevSearch);
+                        runSearch(prevSearch);
+                    }
+                    else if (currentSelection && currentSelection.next().length != 0)
                         newSelection = currentSelection.next();
                     else
                         newSelection = dlgDiv.find("> div > div:first");
@@ -96,9 +98,9 @@ var com_controlj_addon_jumpto = function() {
         dlgDiv.dialog("close");
     }
 
-    function runSearch() {
+    function runSearch(search) {
         inProgress = true;
-        lastSearch = dlgDiv.find('> input').val();
+        lastSearch = search;
 
         var params = {value: lastSearch};
         $.get('/'+addonName+'/servlets/search',params, function(response) {
@@ -123,7 +125,7 @@ var com_controlj_addon_jumpto = function() {
         searchTimer = null;
         var currentSearch = dlgDiv.find('> input').val();
         if (!inProgress && (lastSearch != currentSearch))
-            runSearch()
+            runSearch(currentSearch);
     }
 
     function queueSearch(delay) {
