@@ -53,8 +53,7 @@ public class SearchServlet extends HttpServlet
 
    @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
    {
-      resp.setContentType("text/html");
-
+      resp.setContentType("application/json");
       final String value = req.getParameter(PARAM_VALUE);
       if (req.getParameter(PARAM_REINIT) != null)
          req.getSession().removeAttribute(KEY_DATA);

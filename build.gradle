@@ -8,7 +8,7 @@ apply from: configurations.gradleScript.resolve().iterator().next()
 info {
     name = 'JumpTo'
     description = 'Quickly and easily find areas and equipment'
-    version = '0.9.5'
+    version = '0.9.6'
     vendor = 'ALC Labs'
     systemMenuProvider = 'com.alcshare.gothere.ui.FindMenu'
 }
