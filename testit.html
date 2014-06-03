@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<button id="test">Test</button>
+<script>
+    document.getElementById("test").onclick = function() {
+        var windoc = window.open().document;
+        windoc.open("text/html", "replace");
+        windoc.write("<html><body><pre style='word-wrap: normal;white-space: normal'>");
+        var json = '[{"disp":"USA / Arizona / 311JF Phoenix Camelback / 311JF Electric Meter","gql":"#cy311jf_electric_meter"        },{"disp":"USA / Arizona / 311JF Phoenix Camelback / 311JF RTU-06 Meeting Room A","gql":"#cy311jf_ac-08"},{"disp":"USA / Arizona / 311JF Phoenix Camelback / 311JF RTU-07 Meeting Room B","gql":"#cy311jf_ac-09"},{"disp":"USA / Arizona / 311JF Phoenix Camelback / 311JF RTU-08 Meeting Room C","gql":"#cy311jf_ac-10"},{"disp":"USA / Arizona / 311L2 Scottsdale at Mayo Clinic","gql":"#cy311l2"}]'
+        windoc.write(json)
+        windoc.write("</pre></body></html>")
+        windoc.close();
+    }
+</script>
+</body>
+</html>

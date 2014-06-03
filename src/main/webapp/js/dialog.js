@@ -105,8 +105,22 @@ var com_controlj_addon_jumpto = function() {
         var params = {value: lastSearch};
         $.get('/'+addonName+'/servlets/search',params, function(response) {
             inProgress = false;
-
-            var results = JSON.parse(response);
+            var results = response;
+            /*
+            try {
+               results = JSON.parse(response);
+            } catch (err) {
+            // useful to display contents of error responses.
+                var windoc = window.open().document;
+                windoc.open("text/html", "replace");
+                windoc.write("<html><body><pre style='word-wrap: normal;white-space: normal'>");
+                windoc.write(response)
+                windoc.write("</pre></body></html>")
+                windoc.close()
+                windoc.focus()
+                throw err;
+            }
+            */
             var wrapper = dlgDiv.find('> div').empty().detach();
             for (var i = 0; i < results.length; i++) {
                 var result = results[i];
